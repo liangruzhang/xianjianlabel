@@ -1,0 +1,3 @@
+define v_wms_d01=CORE_OPERATION_D01
+define v_wms_x01=CORE_OPERATION_X01
+define v_wms_lob01=CORE_OPERATION_D01

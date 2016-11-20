@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+
+<!-- =============================================================== -->
+<!-- Configure the Jetty Server                                      -->
+<!--                                                                 -->
+<!-- Documentation of this file format can be found at:              -->
+<!-- http://docs.codehaus.org/display/JETTY/jetty.xml                -->
+<!--                                                                 -->
+<!-- =============================================================== -->
+
+
+<Configure id="Server" class="org.mortbay.jetty.Server">
+
+    <!-- =========================================================== -->
+    <!-- Server Thread Pool                                          -->
+    <!-- =========================================================== -->
+    <Set name="ThreadPool">
+      <!-- Default bounded blocking threadpool 
+      -->
+      <New class="org.mortbay.thread.BoundedThreadPool">
+        <Set name="minThreads">10</Set>
+        <Set name="maxThreads">50</Set>
+        <Set name="lowThreads">25</Set>
+      </New>
+
+      <!-- New queued blocking threadpool : better scalability
+      <New class="org.mortbay.thread.QueuedThreadPool">
+        <Set name="minThreads">10</Set>
+        <Set name="maxThreads">25</Set>
+        <Set name="lowThreads">5</Set>
+        <Set name="SpawnOrShrinkAt">2</Set>
+      </New>
+      -->
+
+
+      <!-- Optional Java 5 bounded threadpool with job queue 
+      <New class="org.mortbay.thread.concurrent.ThreadPool">
+        <Set name="corePoolSize">50</Set>
+        <Set name="maximumPoolSize">50</Set>
+      </New>
+      -->
+    </Set>
+
+
+
+    <!-- =========================================================== -->
+    <!-- Set connectors                                              -->
+    <!-- =========================================================== -->
+    <!-- One of each type!                                           -->
+    <!-- =========================================================== -->
+
+    <!-- Use this connector for many frequently idle connections
+         and for threadless continuations.
+    -->    
+    <Call name="addConnector">
+      <Arg>
+          <New class="org.mortbay.jetty.nio.SelectChannelConnector">
+            <Set name="host"><SystemProperty name="jetty.host" /></Set>
+            <Set name="port"><SystemProperty name="jetty.port" default="8080"/></Set>
+            <Set name="maxIdleTime">30000</Set>
+            <Set name="Acceptors">2</Set>
+            <Set name="statsOn">false</Set>
+            <Set name="confidentialPort">8443</Set>
+		    <Set name="lowResourcesConnections">5000</Set>
+		    <Set name="lowResourcesMaxIdleTime">5000</Set>
+          </New>
+      </Arg>
+    </Call>
+
+    <!-- =========================================================== -->
+    <!-- Set handler Collection Structure                            --> 
+    <!-- =========================================================== -->
+    <Set name="handler">
+	<New id="Handlers" class="org.mortbay.jetty.handler.ContextHandlerCollection">
+		<Set name="handlers">
+			<Array type="org.mortbay.jetty.Handler">
+				<Item>
+					<New id="RequestLog" class="org.mortbay.jetty.handler.RequestLogHandler" />
+				</Item>
+				<Item>
+					<New class="org.mortbay.jetty.webapp.WebAppContext">
+						<Set name="contextPath">/</Set>
+						<Set name="resourceBase"><SystemProperty name="jiudl.home" default="." />/WebRoot</Set><!-- /WebRoot webpush -->
+						<Set name="defaultsDescriptor"><SystemProperty name="jiudl.home" default="."/>/etc/webdefault.xml</Set>
+					</New>
+				</Item>
+				<Item>
+					<New class="org.mortbay.jetty.webapp.WebAppContext">
+						<Set name="contextPath">/log</Set>
+						<Set name="resourceBase"><SystemProperty name="jiudl.home" default="." />/log</Set>
+					</New>
+				</Item>
+			</Array>
+		</Set>
+	</New>
+</Set>
+    
+<!-- =========================================================== -->
+<!-- extra options                                               -->
+<!-- =========================================================== -->
+<Set name="stopAtShutdown">true</Set>
+<Set name="sendServerVersion">true</Set>
+<Set name="sendDateHeader">true</Set>
+<Set name="gracefulShutdown">1000</Set>
+
+</Configure>
