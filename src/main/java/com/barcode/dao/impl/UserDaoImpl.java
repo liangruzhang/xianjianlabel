@@ -42,6 +42,7 @@ public class UserDaoImpl implements UserDao {
 		try{
 			
 			String userId = (String)query.getSingleResult();
+			return true;
 		}catch(NoResultException e){
 			logger.error("get user error", e);
 		}catch(NonUniqueResultException e){
