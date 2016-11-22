@@ -25,6 +25,9 @@ public abstract class AuditableEntity extends AbstractEntity {
 
     @Column(name = "created_date_time")
     private Date createdDateTime;
+    
+    @Column(name = "DELETED_FLAG",length =10)
+    private String deleteFlag;
 
     public void setCreatedDateTime(Date createdDateTime) {
 		this.createdDateTime = createdDateTime;
@@ -98,5 +101,13 @@ public abstract class AuditableEntity extends AbstractEntity {
     public void setCreatedByOprUnit(String createdByOprUnit) {
         this.createdByOprUnit = createdByOprUnit;
     }
+
+	public String getDeleteFlag() {
+		return deleteFlag;
+	}
+
+	public void setDeleteFlag(String deleteFlag) {
+		this.deleteFlag = deleteFlag;
+	}
 
 }

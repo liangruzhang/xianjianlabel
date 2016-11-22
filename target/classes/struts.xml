@@ -5,22 +5,44 @@
 
 <struts>
 
-    <constant name="struts.enable.DynamicMethodInvocation" value="false" />
-    <constant name="struts.devMode" value="true" />
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<constant name="struts.devMode" value="true" />
 
-	<package name="securtiy" extends="struts-default" namespace="/login">
-		<!-- <action name="add" class="userController" method="add">
-			<result type="freemarker">register.html</result>
-			<result name="error" type="freemarker">error.html</result>
-		</action> -->
-		 <action name = "login" class = "com.barcode.view.action.LoginAction" method="login">
-		 
-            <!-- 定义3个逻辑视图和物理资源之间的映射  -->
-            <result name = "input">./login.jsp</result>
-            <result name = "error">./login.jsp</result>
-            <result name = "success">/main.jsp</result>
-        </action>
-        
+	<package name="securtiy" extends="struts-default" namespace="/">
+		<interceptors>
+			<interceptor name="sessionCheck"
+				class="com.barcode.view.interceptor.SecurityInterceptor" >
+				<param name="loginActionURL">login</param>
+				</interceptor>
+			<interceptor-stack name="sessionCheckStack">
+				<!-- name为所要引用的拦截器的引用名称 刚才定义了一个name为 sessionCheck的拦截器，则引用就为sessionCheck-->
+				<!-- 每一个自定义的拦截栈都应该必须配上defaultStack拦截栈，该拦截栈是Struts2默认的拦截栈，里面封装了一组拦截器-->
+				<interceptor-ref name="defaultStack" />
+				<interceptor-ref name="sessionCheck" />
+			</interceptor-stack>
+		</interceptors>
+		<!-- <default-action-ref name="" />  -->
+        <global-results>
+		<!-- 配置token的invalid.token的返回视图，即当页面重复提交，页面将自动转到/error.jsp页面并提示 -->
+                     <result name="invalid.token">/error.jsp</result>
+                     <result name="error">/error.jsp</result>
+                     
+                     <!-- 配置name为backhome的resule，重定向为IndexAction-->
+                     <!-- <result name="backhome"  type="redirectAction">IndexAction</result> -->
+                     <!-- 配置name为testChain的resule， 转发跳转到testAction -->
+                     <!-- <result name="testChain"  type="chain">testAction</result> -->
+     </global-results>
+	
+		<action name="login" class="com.barcode.view.action.TestAction"
+			method="add">
+			<interceptor-ref name="sessionCheckStack"/>
+			<!-- 定义3个逻辑视图和物理资源之间的映射 -->
+			<result name="input">./login.jsp</result>
+			<result name="error">./login.jsp</result>
+			<result name="timeout">./login.jsp</result>
+			<result name="success">/main.jsp</result>
+		</action>
+
 		<action name="">
 			<result>index.html</result>
 		</action>

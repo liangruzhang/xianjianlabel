@@ -53,5 +53,27 @@ public class UserDaoImpl implements UserDao {
 		return false;
 	}
 
+	public SecuUser findUser(String companyCode, String userId) {
+		// TODO Auto-generated method stub
+		Query query = entityManager.createQuery("select u from SecuUser u where"+
+				"	u.deleteFlag='N' "+
+				"	and u.userId=? "+
+				"	and u.companyCode=?");
+			query.setParameter(1, userId);
+			query.setParameter(2, companyCode);
+			SecuUser user = null;
+			try{
+			
+			  user = (SecuUser)query.getSingleResult();
+			}catch(NoResultException e){
+			logger.error("get user error", e);
+			}catch(NonUniqueResultException e){
+			logger.error("get user error", e);
+			}catch(Exception e){
+			logger.error("get user error", e);
+			}
+			return user;
+	}
+
 	
 }
